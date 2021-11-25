@@ -17,6 +17,8 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
+    - name: Run Unit Testing
+      run: dotnet test  ${{ github.workspace }}/AnimalAdoption.Web.Portal.UnitTests/AnimalAdoption.Web.Portal.UnitTests.csproj --no-restore --verbosity n
     - name: Build
       run: dotnet build --configuration Release --no-restore
     #- name: List out directory contents
