@@ -33,5 +33,21 @@ namespace AnimalAdoption.Service.Cart.UnitTests
             Assert.Equal("TEST_CART", resultingCart.Id);
             Assert.Equal(0, resultingCart.CartContents.First(x => x.Id == animalId).Quantity);
         }
+
+        [Fact]
+        public void CartManagement_AnimalInCart_AnAnimalIsRemoved()
+        {
+            var animalId = 1;
+            var quantityAmount = 1;
+
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var cartService = new CartService(memoryCache, new AnimalService());
+
+            cartService.SetAnimalQuantity("TEST_CART", animalId, quantityAmount);
+            var resultingCart = cartService.SetAnimalQuantity("TEST_CART", animalId, -1);
+
+            Assert.Equal("TEST_CART", resultingCart.Id);
+            Assert.Equal(0, resultingCart.CartContents.First(x => x.Id == animalId).Quantity);
+        }
     }
 }
