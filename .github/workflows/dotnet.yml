@@ -19,3 +19,13 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: List out directory contents
+      run: |
+        echo "Listing the contents of the GitHub workspace directory"
+        ls ${{ github.workspace }}
+
+        echo "Recursively listing all contents of the current directory"
+        ls -R
+    #- name: Run dotnet publish
+    #  run: dotnet publish -p:AnimalAdoption.Web.Portal/AnimalAdoption.Web.Portal.csproj
+
