@@ -15,6 +15,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
+        source-url: https://nuget.pkg.github.com/alpha128/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Restore dependencies
       run: dotnet restore
     - name: Run Unit Testing
@@ -34,6 +37,12 @@ jobs:
       with:
         name: animal-artifact
         path:  ${{ github.workspace }}/build/
+
+    - name: Run dotnet pack
+      run: dotnet pack ${{ github.workspace }}/AnimalAdoption.Common.Logic/AnimalAdoption.Common.Logic.csproj --configuration Release --no-build
+
+    - name: Run dotnet nuget push
+      run: dotnet nuget push ${{ github.workspace }}/AnimalAdoption.Common.Logic/bin/Release/*.nupkg --skip-duplicate
    
       
 
