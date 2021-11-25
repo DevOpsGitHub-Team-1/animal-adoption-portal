@@ -15,7 +15,7 @@ namespace AnimalAdoption.Common.Logic
                 "icecream",
                 "basketball",
                 "orange",
-                "placeholder"
+                "redpanda"
             };
         }
 
@@ -40,8 +40,8 @@ namespace AnimalAdoption.Common.Logic
                 case "orange":
                     name = "Murphy";
                     break;
-                case "placeholder":
-                    name = "Placeholder";
+                case "redpanda":
+                    name = "Red Panda";
                     break;
             }
             return name;
