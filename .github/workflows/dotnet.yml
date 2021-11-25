@@ -42,7 +42,7 @@ jobs:
       run: dotnet pack ${{ github.workspace }}/AnimalAdoption.Common.Logic/AnimalAdoption.Common.Logic.csproj --configuration Release --no-build
 
     - name: Run dotnet nuget push
-      run: dotnet nuget push ${{ github.workspace }}/AnimalAdoption.Common.Logic/bin/Release/*.nupkg --skip --skip-duplicate
+      run: dotnet nuget push ${{ github.workspace }}/AnimalAdoption.Common.Logic/bin/Release/*.nupkg --skip-duplicate
    
       
 
