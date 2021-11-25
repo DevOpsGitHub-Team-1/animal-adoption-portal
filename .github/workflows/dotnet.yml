@@ -27,5 +27,5 @@ jobs:
         echo "Recursively listing all contents of the current directory"
         ls -R
     - name: Run dotnet publish
-      run: dotnet publish -p:${{ github.workspace }}/AnimalAdoption.Web.Portal:AnimalAdoption.Web.Portal.csproj --output ./build/ --no-build
+      run: dotnet publish ${{ github.workspace }}/AnimalAdoption.Web.Portal:AnimalAdoption.Web.Portal.csproj --output ./build/ --no-build
 
