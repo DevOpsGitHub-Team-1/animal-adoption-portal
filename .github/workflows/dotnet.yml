@@ -156,3 +156,44 @@ jobs:
           resourceGroupName: ${{ env.AZURE_PROD_RG }}
           template: ./arm-template/deploy.json
           parameters: resourceLocation=southeastasia tenantGuid=ab5eb3d0-6067-40ee-b4c0-a2ce05dbf039 appServicePlanName=animal-adoption-serviceplan-prod keyVaultName=appsettingprodkv webAppName=animal-adoption-prod resourceGroupServicePrincipalManagedApplicationObjectId=e2fb148b-4f98-4ce0-af48-777bb6281d26
+
+      # Download build artifact
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: animal-artifact
+          path: ./build/
+          
+      # Deploy to Azure Web apps
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: animal-adoption-prod # Replace with your app name
+          package: ./build/
+      
+      # Get Key Vault
+      - name: Get the keyvault
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "appsettingprodkv"
+          secrets: 'GlobalPassword, SimulatedFailureChance'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+        id: myGetSecretAction
+        
+      # Setting up the app settings
+      - name: Set Web App ACR authentication
+        uses: Azure/appservice-settings@v1
+        with:
+          app-name: animal-adoption-prod
+          app-settings-json: |
+            [
+                {
+                    "name": "SimulatedFailureChance",
+                    "value": "${{ steps.myGetSecretAction.outputs.SimulatedFailureChance }}",
+                    "slotSetting": false
+                },
+                {
+                    "name": "GlobalPassword",
+                    "value": "${{ steps.myGetSecretAction.outputs.GlobalPassword }}",
+                    "slotSetting": false
+                }
+            ] 
