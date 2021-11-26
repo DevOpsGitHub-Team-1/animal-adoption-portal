@@ -43,13 +43,18 @@ jobs:
         name: animal-artifact
         path:  ${{ github.workspace }}/build/
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: arm-template
+        path: deploy.json
+
     - name: Run dotnet pack
       run: dotnet pack ${{ github.workspace }}/AnimalAdoption.Common.Logic/AnimalAdoption.Common.Logic.csproj --configuration Release --no-build
 
     - name: Run dotnet nuget push
       run: dotnet nuget push ${{ github.workspace }}/AnimalAdoption.Common.Logic/bin/Release/*.nupkg --skip-duplicate
 
-  release:
+  release-to-dev:
      needs: build
      runs-on: ubuntu-latest
      steps:
@@ -58,28 +63,34 @@ jobs:
         with:
           name: animal-artifact
           path: ./build/
-          
-      # Deploy to Azure Web apps
-      - name: 'Run Azure webapp deploy action using publish profile credentials'
-        uses: azure/webapps-deploy@v2
-        with: 
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
-          publish-profile: ${{ secrets.AZURE_PROFILE_DEV }} # Define secret variable in repository settings as per action documentation
-          package: ./build/
-    
+
+      - name: Download arm-template
+        uses: actions/download-artifact@v2
+        with:
+          name: arm-template
+          path: ./arm-template/
+
       # Login to our AZURE
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CRED}}
-      
+
+      # Deploy to Azure Web apps
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
+          publish-profile: ${{ secrets.AZURE_PROFILE_DEV }} # Define secret variable in repository settings as per action documentation
+          package: ./build/
+
       - name: Get the keyvalut
         uses: Azure/get-keyvault-secrets@v1
         with:
           keyvault: "appsettingkv"
           secrets: 'GlobalPassword, SimulatedFailureChance'  # comma separated list of secret keys that need to be fetched from the Key Vault 
         id: myGetSecretAction
-          
+
       # Setting up the app settings
       - name: Set Web App ACR authentication
         uses: Azure/appservice-settings@v1
@@ -98,5 +109,4 @@ jobs:
                     "slotSetting": false
                 }
             ]
-      
 
