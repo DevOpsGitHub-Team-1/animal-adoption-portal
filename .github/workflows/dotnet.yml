@@ -110,3 +110,39 @@ jobs:
                 }
             ]
 
+  release-to-prod:
+    runs-on: ubuntu-latest
+    needs: release-to-dev
+
+    env:
+     AZURE_SUBSCRIPTION: cfe96ac1-4cd0-40ad-9751-b18802bf8822
+     AZURE_PROD_RG: DevOpsGitHub-2021-11-25-team-01-prod
+
+    steps:
+    # Download arm template
+      - name: Download arm-template
+        uses: actions/download-artifact@v2
+        with:
+          name: arm-template
+          path: ./arm-template/
+
+      # Login to our AZURE
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_PROD_CRED}}
+
+      # Deploy arm
+      - name: Run ARM deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ env.AZURE_PROD_RG }}
+          template: ./arm-template/deploy.json
+          parameters: |
+            resourceLocation=southeastasia
+            tenantGuid=ab5eb3d0-6067-40ee-b4c0-a2ce05dbf039
+            appServicePlanName
+            keyVaultName
+            webAppName
+            resourceGroupServicePrincipalManagedApplicationObjectId
