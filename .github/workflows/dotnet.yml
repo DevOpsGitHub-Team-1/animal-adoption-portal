@@ -155,4 +155,4 @@ jobs:
           subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ env.AZURE_PROD_RG }}
           template: ./arm-template/deploy.json
-          parameters: resourceLocation=southeastasia tenantGuid=ab5eb3d0-6067-40ee-b4c0-a2ce05dbf039 appServicePlanName=animal-adoption=serviceplan-prod keyVaultName=appsettingprodkv webAppName=animal-adoption-prod resourceGroupServicePrincipalManagedApplicationObjectId=e2fb148b-4f98-4ce0-af48-777bb6281d26
+          parameters: resourceLocation=southeastasia tenantGuid=ab5eb3d0-6067-40ee-b4c0-a2ce05dbf039 appServicePlanName=animal-adoption-serviceplan-prod keyVaultName=appsettingprodkv webAppName=animal-adoption-prod resourceGroupServicePrincipalManagedApplicationObjectId=e2fb148b-4f98-4ce0-af48-777bb6281d26
