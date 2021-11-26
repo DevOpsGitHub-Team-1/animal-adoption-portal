@@ -148,9 +148,6 @@ jobs:
         name: test-artifact
         path: ./test-artifact/
 
-    - name: Setup MSBuild Path
-      uses: warrenbuckley/Setup-MSBuild@v1
-
     - name: Setup VSTest Path
       uses: darenm/Setup-VSTest@v1
 
