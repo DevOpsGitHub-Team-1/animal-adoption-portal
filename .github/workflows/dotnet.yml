@@ -139,7 +139,7 @@ jobs:
 
   run-functional-test:
     needs: release-to-dev
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Download artifact
@@ -147,6 +147,9 @@ jobs:
       with:
         name: test-artifact
         path: ./test-artifact/
+
+    - name: Setup MSBuild Path
+      uses: warrenbuckley/Setup-MSBuild@v1
 
     - name: Setup VSTest Path
       uses: darenm/Setup-VSTest@v1
