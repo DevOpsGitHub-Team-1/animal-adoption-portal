@@ -10,7 +10,7 @@ env:
   AZURE_WEBAPP_NAME: animal-adoption-dev    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '3.1.0'           # set this to the dot net version to use
-
+  FAILURE_CHANCE: 0         # for the app env
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -66,6 +66,30 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
           publish-profile: ${{ secrets.AZURE_PROFILE_DEV }} # Define secret variable in repository settings as per action documentation
           package: ./build/
-   
+    
+      # Login to our AZURE
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CRED}}
+          
+      # Setting up the app settings
+      - name: Set Web App ACR authentication
+        uses: Azure/appservice-settings@v1
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-settings-json: |
+            [
+                {
+                    "name": "SimulatedFailureChance",
+                    "value": "${{ env.FAILURE_CHANCE }}",
+                    "slotSetting": false
+                },
+                {
+                    "name": "GlobalPassword",
+                    "value": "${{ secrets.LOGIN_PASSWORD  }}",
+                    "slotSetting": false
+                }
+            ]
       
 
