@@ -72,6 +72,12 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CRED}}
+      - name:
+        uses: Azure/get-keyvault-secrets@v1
+        with:
+          keyvault: "appsettingkv"
+          secrets: 'GlobalPassword, SimulatedFailureChance'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+          id: myGetSecretAction
           
       # Setting up the app settings
       - name: Set Web App ACR authentication
@@ -82,12 +88,12 @@ jobs:
             [
                 {
                     "name": "SimulatedFailureChance",
-                    "value": "${{ env.FAILURE_CHANCE }}",
+                    "value": "${{ steps.myGetSecretAction.outputs.SimulatedFailureChance }}",
                     "slotSetting": false
                 },
                 {
                     "name": "GlobalPassword",
-                    "value": "${{ secrets.LOGIN_PASSWORD  }}",
+                    "value": "${{ steps.myGetSecretAction.outputs.GlobalPassword }}",
                     "slotSetting": false
                 }
             ]
