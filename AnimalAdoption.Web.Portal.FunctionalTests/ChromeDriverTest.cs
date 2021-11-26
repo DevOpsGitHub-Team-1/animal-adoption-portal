@@ -31,7 +31,7 @@ namespace AnimalAdoption.Web.Portal.FunctionalTests
         public void HomePage_LoadPage_LoadsAnimalsIn10Seconds()
         {
             // Remember to set this in the release pipeline
-            var url = Environment.GetEnvironmentVariable("ANIMAL_ADOPTION_FUNCTIONAL_TEST_PATH") ?? "http://localhost:9000";            
+            var url = Environment.GetEnvironmentVariable("ANIMAL_ADOPTION_FUNCTIONAL_TEST_PATH") ?? "https://animal-adoption-dev.azurewebsites.net/";            
             _driver.Url = url;
             var xPathToCheck = "/html/body/div/main/div/table/tbody/tr[1]/td[2]";
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
