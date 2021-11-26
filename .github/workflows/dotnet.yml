@@ -198,6 +198,7 @@ jobs:
         with: 
           app-name: ${{env.AZURE_PROD_WEBAPP_NAME}}
           package: ./build/
+          slot-name: staging
       
       # Get Key Vault
       - name: Get the keyvault
