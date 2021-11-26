@@ -32,6 +32,8 @@ jobs:
       run: dotnet test  ${{ github.workspace }}/AnimalAdoption.Web.Portal.UnitTests/AnimalAdoption.Web.Portal.UnitTests.csproj --no-restore --verbosity n
     - name: Build
       run: dotnet build --configuration Release --no-restore
+
+
     #- name: List out directory contents
     #  run: |
     #    echo "Listing the contents of the GitHub workspace directory"
@@ -45,6 +47,10 @@ jobs:
       with:
         name: animal-artifact
         path:  ${{ github.workspace }}/build/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-artifact
+        path:  ${{ github.workspace }}/AnimalAdoption.Web.Portal.FunctionalTests/bin/Release/netcoreapp3.1/*
 
     - name: Upload ARM template
       uses: actions/upload-artifact@v2
@@ -129,7 +135,27 @@ jobs:
                     "value": "${{ steps.myGetSecretAction.outputs.GlobalPassword }}",
                     "slotSetting": false
                 }
-            ]      
+            ]   
+
+  run-functional-test:
+    needs: release-to-dev
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: test-artifact
+        path: ./test-artifact/
+
+    - name: Setup MSBuild Path
+      uses: warrenbuckley/Setup-MSBuild@v1
+
+    - name: Setup VSTest Path
+      uses: darenm/Setup-VSTest@v1
+
+    - name: VSTest
+      run: vstest.console.exe  ./test-artifact/AnimalAdoption.Web.Portal.FunctionalTests.dll
 
   release-to-prod:
     runs-on: ubuntu-latest
